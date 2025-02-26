@@ -21,7 +21,7 @@ A Python script to scrape and archive Executive Orders from [whitehouse.gov/pres
 ## Usage
 
 ```bash
-python scraper.py
+python eo-scraper.py
 ```
 
 - First run: Creates `executive_orders.csv`
