@@ -1,6 +1,7 @@
 # White House Executive Order Scraper
-By [Nasser Eledroos](https://nasser.wiki/)
-A Python script to scrape and archive Executive Orders from [WhiteHouse.gov/presidential-actions](https://www.whitehouse.gov/presidential-actions/).
+*By [Nasser Eledroos](https://nasser.wiki/)*
+
+A Python script to scrape and archive Executive Orders from [whitehouse.gov/presidential-actions](https://www.whitehouse.gov/presidential-actions/).
 
 ## Features
 - Automatically detects new Executive Orders
