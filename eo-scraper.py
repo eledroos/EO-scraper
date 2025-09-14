@@ -1,3 +1,4 @@
+
 import csv
 import time
 from datetime import datetime
@@ -80,6 +81,7 @@ def get_eo_urls():
             break
             
         soup = BeautifulSoup(response.content, 'html.parser')
+        # Updated selector for new website structure
         articles = soup.select('li.wp-block-post h2.wp-block-post-title a')
         
         if not articles:
@@ -92,20 +94,36 @@ def get_eo_urls():
             if url and url not in existing_urls:
                 eo_urls.append(url)
                 new_urls += 1
-                log(f"Found new Executive Order: {url}", "highlight")
+                log(f"Found new Presidential Action: {url}", "highlight")
         
         log(f"Page processed: Found {new_urls} new URLs (Total: {len(eo_urls)})")
         
+        # Updated pagination selector for new website structure
         next_link = soup.select_one('a.wp-block-query-pagination-next')
         current_url = urljoin(response.url, next_link['href']) if next_link else None
     
-    log(f"Found {len(eo_urls)} new EO URLs to process", "success")
+    log(f"Found {len(eo_urls)} new Presidential Action URLs to process", "success")
     return eo_urls
 
 def is_executive_order(soup):
     """Checks if the page is an Executive Order."""
+    # Check for Executive Orders in the taxonomy categories
+    taxonomy_links = soup.select('.taxonomy-category a')
+    for link in taxonomy_links:
+        if "executive-orders" in link.get('href', '') or "Executive Orders" in link.get_text():
+            return True
+    
+    # Fallback: check for EXECUTIVE ORDER in the byline (old method)
     byline = soup.find('div', class_='wp-block-whitehouse-topper__meta--byline')
-    return bool(byline and "EXECUTIVE ORDER" in byline.get_text().upper())
+    if byline and "EXECUTIVE ORDER" in byline.get_text().upper():
+        return True
+    
+    # Additional fallback: check title for executive order keywords
+    title = soup.find('h1')
+    if title and any(keyword in title.get_text().upper() for keyword in ["EXECUTIVE ORDER", "EXECUTIVE ORDER NO"]):
+        return True
+    
+    return False
 
 def process_eo(url, current, total):
     """Processes a single EO URL."""
